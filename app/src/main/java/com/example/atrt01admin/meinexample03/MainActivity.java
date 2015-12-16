@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String mLastUpdateTime;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
-//    private TextView sqliteTextView;
+    private TextView showDataTextView;
     public MyDBHandler dbHandler;
 
     @Override
@@ -51,26 +57,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHandler = new MyDBHandler(this, null, null, 1);
+        //dbHandler = new MyDBHandler(this, null, null, 1);
         //printDatabase();
-
-//        final Button button = (Button) findViewById(R.id.startSQLitetoString);
-//        button.setOnClickListener(new View.OnClickListener() {
-//                                      public void onClick(View v) {
-//                                          printDatabase();
-//                                          //sqliteTextView.setText(String.valueOf(dbHandler.toString()));
-//                                          //SQLiteTextView(dbHandler.toString();
-//                                          //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
-//                                      }
-//
-//                                  });
-
 
         mLatitudeTextView  = (TextView) findViewById((R.id.latitude_textview));
         mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
-        //sqliteTextView     = (TextView) findViewById(R.id.sqliteTextView);
-
+        showDataTextView   = (TextView) findViewById(R.id.showDataTextView);
         mDetectedActivityTextView = (TextView) findViewById(R.id.detected_activities_textview);
+
+        final Button button = (Button) findViewById(R.id.show_records);
+        button.setOnClickListener(new View.OnClickListener() {
+                                      public void onClick(View v) {
+                                          //readFromFile();
+                                          showDataTextView.setText(readFromFile());
+
+                                          //printDatabase();
+                                          //sqliteTextView.setText(String.valueOf(dbHandler.toString()));
+                                          //SQLiteTextView(dbHandler.toString();
+                                          //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
+                                      }
+
+                                  });
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -260,11 +268,84 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if(activity.getType()==DetectedActivity.RUNNING || activity.getType()==DetectedActivity.WALKING || activity.getType()==DetectedActivity.STILL)
                 activityString = "Activity: " + getDetectedActivity(activity.getType()) + ", Confidence: " + activity.getConfidence() + "%\n"; // += für mehrere activities
 
-                dbHandler.addRecord(getDetectedActivity(activity.getType()));
+                //dbHandler.addRecord(getDetectedActivity(activity.getType()));
+                writeToFile(activityString);
+
             }
             mDetectedActivityTextView.setText(activityString);
 
         }
     }
 
+    public void writeToFile(String detectedActivity){
+        String filename = "save.txt";
+        String activity = detectedActivity;
+        FileOutputStream fos;
+        try{
+            fos = openFileOutput(filename,MODE_APPEND);//MODE_APPEND
+            fos.write(activity.getBytes());
+            fos.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String readFromFile () {
+        StringBuffer datax = new StringBuffer("");
+        try {
+            FileInputStream fis = openFileInput ( "save.txt" ) ;
+            InputStreamReader isr = new InputStreamReader ( fis ) ;
+            BufferedReader buffreader = new BufferedReader ( isr ) ;
+
+            String readString = buffreader.readLine ( ) ;
+            while ( readString != null ) {
+                datax.append(readString);
+                readString = buffreader.readLine ( ) ;
+            }
+
+            isr.close ( ) ;
+        } catch ( IOException ioe ) {
+            ioe.printStackTrace ( ) ;
+        }
+        return datax.toString() ;
+    }
+
 }
+//
+//String filename = "myfile";
+//String string = "Hello world!";
+//FileOutputStream outputStream;
+//
+//try {
+//        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+//        outputStream.write(string.getBytes());
+//        outputStream.close();
+//        } catch (Exception e) {
+//        e.printStackTrace();
+//        }
+
+//String fileName = context.getFilesDir().getPath().toString() + "virtual_companion_blutdrucks1.json";
+//context.getFilesDir().getPath()
+
+//    openFileOutput("savedData.txt", MODE_APPEND | MODE_WORLD_READABLE );
+
+//    // write text to file
+//    public void WriteBtn(View v) {
+//        // add-write text into file
+//        try {
+//            FileOutputStream fileout=openFileOutput("mytextfile.txt", MODE_PRIVATE);
+//            OutputStreamWriter outputWriter=new OutputStreamWriter(fileout);
+//            outputWriter.write(textmsg.getText().toString());
+//            outputWriter.close();
+//
+//            //display file saved message
+//            Toast.makeText(getBaseContext(), "File saved successfully!",
+//                    Toast.LENGTH_SHORT).show();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }

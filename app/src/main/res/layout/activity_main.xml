@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="removeActivityUpdates"
-        android:text="Remove Activity Updates" />
+        android:text="Remove A.U." />
         <!--
         <Button
             android:id="@+id/startSQLitetoString"
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openNewActivity"
-        android:text="open uni area" />
+        android:text="open university area" />
 
     <Button
         android:id="@+id/home_area"
@@ -54,6 +54,13 @@
         android:layout_height="wrap_content"
         android:onClick="openNewActivity"
         android:text="open home area" />
+
+    <Button
+        android:id="@+id/show_records"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick=""
+        android:text="show records" />
 
         <TextView
             android:id="@+id/detected_activities_textview"
@@ -99,13 +106,13 @@
             android:background="#ADD8E6" />
 
         <TextView
-            android:id="@+id/sqliteTextView"
+            android:id="@+id/showDataTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/longitude_textview"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/longitude_textview"
             android:textSize="16sp"
-            android:background="#ADD8E6" />
+            android:background="#c0eefe" />
 
     </LinearLayout>
