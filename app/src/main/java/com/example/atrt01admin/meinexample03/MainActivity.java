@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,18 +28,24 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, LocationListener,Serializable {
 
     private static final String TAG = "MainActivity";
     private GoogleApiClient mGoogleApiClient;
@@ -47,37 +54,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private LocationRequest mLocationRequest;
     private String mLastUpdateTime;
+    private double latitude;
+    private double longitude;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
     private TextView showDataTextView;
-    public MyDBHandler dbHandler;
+    private Context context;
+    public  List<RecordItem> recordItemList;
+    public MyDBHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //dbHandler = new MyDBHandler(this, null, null, 1);
+        recordItemList = new ArrayList<>();
+        context = getApplicationContext();
+
+        db = new MyDBHandler(this, null, null, 1);
         //printDatabase();
 
         mLatitudeTextView  = (TextView) findViewById((R.id.latitude_textview));
         mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
         showDataTextView   = (TextView) findViewById(R.id.showDataTextView);
+        showDataTextView.setMovementMethod(new ScrollingMovementMethod());
         mDetectedActivityTextView = (TextView) findViewById(R.id.detected_activities_textview);
 
         final Button button = (Button) findViewById(R.id.show_records);
         button.setOnClickListener(new View.OnClickListener() {
-                                      public void onClick(View v) {
-                                          //readFromFile();
-                                          showDataTextView.setText(readFromFile());
+            public void onClick(View v) {
+                getAllRecords();
+                //printRecordItemList();
+//                try {
+//
+//                    readFromFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    showDataTextView.setText(readFromFile());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 
-                                          //printDatabase();
-                                          //sqliteTextView.setText(String.valueOf(dbHandler.toString()));
-                                          //SQLiteTextView(dbHandler.toString();
-                                          //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
-                                      }
+                //printDatabase();
+                //sqliteTextView.setText(String.valueOf(dbHandler.toString()));
+                //SQLiteTextView(dbHandler.toString();
+                //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
+            }
 
-                                  });
+        });
 
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -256,6 +286,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
         Toast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
 
+        latitude = location.getLatitude();
+        longitude= location.getLongitude();
+
     }
 
     public class ActivityDetectionBroadcastReceiver extends BroadcastReceiver {
@@ -264,56 +297,248 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> detectedActivities = intent.getParcelableArrayListExtra(Constants.STRING_EXTRA);
             String activityString = "";
+            String activityToFile = "";
             for (DetectedActivity activity : detectedActivities) {
-                if(activity.getType()==DetectedActivity.RUNNING || activity.getType()==DetectedActivity.WALKING || activity.getType()==DetectedActivity.STILL)
-                activityString = "Activity: " + getDetectedActivity(activity.getType()) + ", Confidence: " + activity.getConfidence() + "%\n"; // += für mehrere activities
+                if(activity.getType()==DetectedActivity.RUNNING || activity.getType()==DetectedActivity.WALKING || activity.getType()==DetectedActivity.STILL) {
+                    activityString = "Activity: " + getDetectedActivity(activity.getType()) + ", Confidence: " + activity.getConfidence() + "%\n"; // += für mehrere activities
 
-                //dbHandler.addRecord(getDetectedActivity(activity.getType()));
-                writeToFile(activityString);
+                    activityToFile = getDetectedActivity(activity.getType());
+
+                    //create new recordItem
+                    Date dNow = new Date();
+                    RecordItem recordItem = new RecordItem(activityToFile,latitude,longitude,dNow);
+                    addRecordToDB(recordItem);
+
+                    //recordAddToList(activityToFile);
+//                    try {
+//                        writeToFile(activityToFile); //hier addToList
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    //dbHandler.addRecord(getDetectedActivity(activity.getType()));
+
+                }
 
             }
             mDetectedActivityTextView.setText(activityString);
-
         }
     }
 
-    public void writeToFile(String detectedActivity){
-        String filename = "save.txt";
+    public void addRecordToDB(RecordItem recordItem){
+
+        db.addRecord(recordItem);
+        System.out.println("\n addRecordToDB:" + recordItem.recordItemToString());
+    }
+
+    public void getAllRecords(){
+        // table records has no column named latitude (code 1): , while compiling: INSERT INTO records(latitude,timestamp,longitude,activity) VALUES (?,?,?,?)
+        System.out.println(db.getTableAsString());
+
+//        List<RecordItem> recordItemList = db.getAllRecordItems();
+//
+//        for (RecordItem recordItem : recordItemList) {
+//            System.out.println(recordItem.getActivity());
+//            System.out.println("huhu");
+//        }
+    }
+
+
+
+    public void recordAddToList(String detectedActivity){
         String activity = detectedActivity;
-        FileOutputStream fos;
-        try{
-            fos = openFileOutput(filename,MODE_APPEND);//MODE_APPEND
-            fos.write(activity.getBytes());
-            fos.close();
+        Date dNow = new Date();
+        RecordItem recordItem = new RecordItem(activity,latitude,longitude,dNow);
+        recordItemList.add(recordItem);
+    }
 
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void printRecordItemList(){
+        for(RecordItem recordItem : recordItemList){
+            System.out.println(recordItem.recordItemToString());
         }
+    }
+
+    public void writeToFile(String detectedActivity) throws IOException {
+//        String filename = "save.txt";   // fos - txt approach
+//        String activity = detectedActivity;
+//        String[] record = new String[3];
+//        FileOutputStream fos;
+//        try{
+//            fos = openFileOutput(filename,MODE_APPEND);//MODE_APPEND
+//            fos.write(activity.getBytes());
+//            fos.close();
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        String activity = detectedActivity;
+        //get timestamp
+        Date dNow = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+        sdf.format(dNow);
+        //json approach http://www.java2blog.com/2013/11/gson-example-read-and-write-json.html
+        //Gson gson = new GsonBuilder().serializeNulls().create();
+        Gson gson = new Gson();
+        RecordItem recordItem = new RecordItem(activity,latitude,longitude,dNow);
+        String json = gson.toJson(recordItem);
+        String myFile = context.getFilesDir().getPath().toString() + "/" + "records.json";
+
+
+
+        FileOutputStream fOut = new FileOutputStream(myFile);
+        OutputStreamWriter myOutWriter =new OutputStreamWriter(fOut);
+        myOutWriter.append(json);
+        System.out.println(myFile);
+        myOutWriter.close();
+        fOut.close();
+        System.out.println(json.toString());
+
+
+
+        //        JSONObject object = new JSONObject();
+//        try {
+//            object.put("activity", activity);
+//            object.put("latitude", new Double(latitude));
+//            object.put("longitude", new Double(longitude));
+//            object.put("date", (String.valueOf(dNow)));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(object);
+//        object.length()
+
+//        context = getApplicationContext();
+//        Utils.loadData(context);
+//        Utils.addData(klasse);
+//        Utils.saveData(context);
+
+        //http://stackoverflow.com/questions/19459082/read-and-write-data-with-gson
+//        File myFile = new File("/sdcard/records.txt");
+        //myFile.createNewFile();
+//        FileOutputStream fOut = new FileOutputStream(myFile);
+//        OutputStreamWriter myOutWriter =new OutputStreamWriter(fOut);
+//        myOutWriter.append(json);
+//        System.out.println(myFile);
+//        myOutWriter.close();
+//        fOut.close();
+
+//        FileOutputStream fos;
+//        //        FileOutputStream fos;
+//        try{
+//            fos = openFileOutput("records",MODE_PRIVATE);//MODE_APPEND
+//            fos.write(json.getBytes());
+//            fos.close();
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
+//        try{
+//            //write converted json to file
+//            FileWriter writer = new FileWriter("records.json");
+//            writer.write(json);
+//            writer.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
-    public String readFromFile () {
-        StringBuffer datax = new StringBuffer("");
-        try {
-            FileInputStream fis = openFileInput ( "save.txt" ) ;
-            InputStreamReader isr = new InputStreamReader ( fis ) ;
-            BufferedReader buffreader = new BufferedReader ( isr ) ;
+    public void readFromFile () throws IOException, JSONException {
 
-            String readString = buffreader.readLine ( ) ;
-            while ( readString != null ) {
-                datax.append(readString);
-                readString = buffreader.readLine ( ) ;
-            }
+//        String in=null;
+//        JSONObject reader = new JSONObject(in);
+//
+//        JSONObject record = reader.getJSONObject("RecordItem");
+//        RecordItem recordItem = new RecordItem();
+//        recordItem.setActivity(record.getString("activity"));
 
-            isr.close ( ) ;
-        } catch ( IOException ioe ) {
-            ioe.printStackTrace ( ) ;
-        }
-        return datax.toString() ;
+
+
+//        StringBuffer datax = new StringBuffer("");
+//        try {
+//            FileInputStream fis = openFileInput ( "save.txt" ) ;
+//            InputStreamReader isr = new InputStreamReader ( fis ) ;
+//            BufferedReader buffreader = new BufferedReader ( isr ) ;
+//
+//            String readString = buffreader.readLine ( ) ;
+//            while ( readString != null ) {
+//                datax.append(readString);
+//                readString = buffreader.readLine ( ) ;
+//            }
+//
+//            isr.close ( ) ;
+//        } catch ( IOException ioe ) {
+//            ioe.printStackTrace ( ) ;
+//        }
+//        return datax.toString() ;
+
+//        ArrayList<RecordItem> recordItemArrayList = new ArrayList<>();
+//        Type listOfObject= new TypeToken<ArrayList<RecordItem>>(){}.getType();
+//        String myFile = context.getFilesDir().getPath().toString() + "/" + "records.json";
+//        System.out.println(myFile);
+//        Gson gson = new Gson();
+//        Reader reader;
+//
+//        reader = new InputStreamReader(new FileInputStream(myFile));
+//        recordItemArrayList = gson.fromJson(reader,listOfObject);
+//        reader.close();
+//        RecordItem.setActivity(recordItemArrayList);
+//
+        //File myFile = new File("/sdcard/records.txt");
+//        FileInputStream fIn = new FileInputStream(myFile);
+//        BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
+//        String aDataRow = "";
+//        String aBuffer = ""; //Holds the text
+//        while ((aDataRow = myReader.readLine()) != null)
+//        {
+//            aBuffer += aDataRow ;
+//        }
+//        return aBuffer;
+//        myReader.close();
+//
+        Gson gson = new Gson();
+
+        String myFile = context.getFilesDir().getPath().toString() + "/" + "records.json";
+        BufferedReader br = new BufferedReader(
+                new FileReader(myFile));
+
+        //for(int i=0;i<myFile.length();i++) {
+            //convert the json string back to object
+            recordItemList = gson.fromJson(br, List.class);
+            RecordItem recordItem = gson.fromJson(br, RecordItem.class);
+            System.out.println("\n readFromFile:");
+            System.out.println(recordItem.getActivity());
+            //return recordItem.toString();
+        //}
+//        Gson GsonObject = new Gson();
+//
+//        String JSInput = "[{\"value1\":\"one\",\"value2\":1},{\"value1\":\"two\",\"value2\":2},{\"value1\":\"three\",\"value2\":3}]";
+//        TabClass[] Input_String = GsonObject.fromJson(JSInput, TabClass[].class);
+//        System.out.println(Arrays.toString(Input_String));
+//
+
     }
 
 }
+
+/*
+    public void gsonBuilder() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        RecordItem recordItem = new RecordItem();
+        String json = gson.toJson(recordItem);
+        System.out.println(json);
+
+        json = gson.toJson(null);
+        System.out.println(json);
+    }
+*/
+
 //
 //String filename = "myfile";
 //String string = "Hello world!";
@@ -349,3 +574,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //            e.printStackTrace();
 //        }
 //    }
+
+//String fileName = context.getFilesDir().getPath().toString() + "virtual_companion_blutdrucks1.json";
+//context.getFilesDir().getPath()
+
+//context = getApplicationContext();
+//        Utils.loadData(context);

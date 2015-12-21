@@ -26,14 +26,14 @@
         android:layout_height="wrap_content"
         android:onClick="removeActivityUpdates"
         android:text="Remove A.U." />
-        <!--
-        <Button
-            android:id="@+id/startSQLitetoString"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="printDatabase"
-            android:text="printDatabase" />
-            -->
+    <!--
+    <Button
+        android:id="@+id/startSQLitetoString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="printDatabase"
+        android:text="printDatabase" />
+        -->
     <Button
         android:id="@+id/working_area"
         android:layout_width="match_parent"
@@ -62,57 +62,59 @@
         android:onClick=""
         android:text="show records" />
 
-        <TextView
-            android:id="@+id/detected_activities_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:background="#6495ED" />
+    <TextView
+        android:id="@+id/detected_activities_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:background="#6495ED" />
 
-        <TextView
-            android:id="@+id/latitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Latitude:"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/latitude_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/latitude"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/latitude"
-            android:textSize="16sp"
-            android:background="#ADD8E6" />
-        <TextView
-            android:id="@+id/longitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Longitude:"
-            android:layout_marginTop="24dp"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/longitude_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/longitude"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/longitude"
-            android:textSize="16sp"
-            android:background="#ADD8E6" />
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Latitude:"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/latitude_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/latitude"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/latitude"
+        android:textSize="16sp"
+        android:background="#ADD8E6" />
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Longitude:"
+        android:layout_marginTop="24dp"
+        android:textSize="18sp" />
+    <TextView
+        android:id="@+id/longitude_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/longitude"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/longitude"
+        android:textSize="16sp"
+        android:background="#ADD8E6" />
 
-        <TextView
-            android:id="@+id/showDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/longitude_textview"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/longitude_textview"
-            android:textSize="16sp"
-            android:background="#c0eefe" />
+    <TextView
+        android:id="@+id/showDataTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/longitude_textview"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/longitude_textview"
+        android:textSize="16sp"
+        android:background="#c0eefe"
+        android:maxLines = "50"
+        android:scrollbars = "vertical"/>
 
-    </LinearLayout>
+</LinearLayout>
