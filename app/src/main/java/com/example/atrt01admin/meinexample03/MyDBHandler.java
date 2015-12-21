@@ -13,7 +13,7 @@ import java.util.List;
 public class MyDBHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION=1;
-    private static final String DATABASE_NAME="save2.db"; //unbedingt .db
+    private static final String DATABASE_NAME="save3.db"; //unbedingt .db
     public static final String TABLE_NAME = "records";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_ACTIVITY = "activity";
@@ -31,9 +31,8 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME); //versuch zum neuen table
         String query = "CREATE TABLE " + TABLE_NAME + " ( " +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_LAT  + " TEXT, " +
                 COLUMN_ACTIVITY + " TEXT, " +
-
+                COLUMN_LAT  + " TEXT, " +
                 COLUMN_LONG + " TEXT, " +
                 COLUMN_TIMESTAMP + " TEXT" +
                 ");";
@@ -57,10 +56,10 @@ public class MyDBHandler extends SQLiteOpenHelper{
         // 2. create ContentValues to add key "column"/value
         System.out.println(recordItem.getLatitude());
         ContentValues values = new ContentValues();
-        values.put(COLUMN_LAT, recordItem.getLatitude());
-        values.put(COLUMN_TIMESTAMP, recordItem.getTime().toString());
-        values.put(COLUMN_LONG, recordItem.getLongitude());
         values.put(COLUMN_ACTIVITY, recordItem.getActivity()); //bsp get.productname()
+        values.put(COLUMN_LAT, recordItem.getLatitude());
+        values.put(COLUMN_LONG, recordItem.getLongitude());
+        values.put(COLUMN_TIMESTAMP, recordItem.getTime().toString());
         System.out.println("values aus DB: " + values.toString());
         // 3. insert
         db.insert(TABLE_NAME, null, values);
