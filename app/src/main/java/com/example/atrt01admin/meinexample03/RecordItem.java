@@ -2,6 +2,7 @@ package com.example.atrt01admin.meinexample03;
 
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RecordItem implements Serializable {
@@ -10,16 +11,17 @@ public class RecordItem implements Serializable {
     String activity;
     double latitude;
     double longitude;
-    Date time;
+    String time;
 
     public RecordItem(){
         this.activity = "still";
         this.latitude = 16.0;
         this.longitude=48.0;
-        this.time = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd HH:mm:ss");
+        this.time = ft.format(new Date());
     }
 
-    public RecordItem(String activity, double latitude, double longitude, Date time) {
+    public RecordItem(String activity, double latitude, double longitude, String time) {
 
         this.activity=activity;
         this.latitude = latitude;
@@ -40,7 +42,7 @@ public class RecordItem implements Serializable {
         return longitude;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
@@ -56,27 +58,13 @@ public class RecordItem implements Serializable {
         this.longitude = longitude;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
+    public void setTime(String time) { this.time = time; }
 
     public String recordItemToString(){
         return "activity: " + activity +
-        " latitude: " + latitude +
-        " longitude: " + longitude +
-        " time: " + time +
-        "\n";
+                " latitude: " + latitude +
+                " longitude: " + longitude +
+                " time: " + time +
+                "\n";
     }
 }
-
-/*
-    public void gsonBuilder() {
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        RecordItem recordItem = new RecordItem();
-        String json = gson.toJson(recordItem);
-        System.out.println(json);
-
-        json = gson.toJson(null);
-        System.out.println(json);
-    }
-*/

@@ -15,6 +15,9 @@ import java.util.ArrayList;
 
 public class DisplayActivity extends AppCompatActivity {
 
+    //MyDBHandler db = new MyDBHandler(this, null, null, 1);
+
+
     private TextView tvOne;
     BarChart barChart; //bardataset für Barchart
 
@@ -29,14 +32,14 @@ public class DisplayActivity extends AppCompatActivity {
         //auslesen des Intents der Activity, welche diese Activity aufrief. Inhalt der message kommt in den TextView
         Intent intent = getIntent();
         String message = intent.getStringExtra(Constants.STRING_EXTRA);
-          tvOne.setText(message);
+        tvOne.setText(message);
 //        //setContentView(tvOne);
 
-        //barchart bsp DAtenset
+        //barchart DAtenset
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(6f, 0));
-        entries.add(new BarEntry(12f, 1));
-        entries.add(new BarEntry(18f, 2));
+        entries.add(new BarEntry(6686f, 0));
+        entries.add(new BarEntry(987f, 1));
+        entries.add(new BarEntry(8755f, 2));
 
         //create Dataset out of entries
         BarDataSet dataset = new BarDataSet(entries, "Activities");

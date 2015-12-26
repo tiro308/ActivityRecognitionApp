@@ -3,6 +3,7 @@ package com.example.atrt01admin.meinexample03;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -13,7 +14,7 @@ import java.util.List;
 public class MyDBHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION=1;
-    private static final String DATABASE_NAME="save3.db"; //unbedingt .db
+    private static final String DATABASE_NAME="save4.db"; //unbedingt .db
     public static final String TABLE_NAME = "records";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_ACTIVITY = "activity";
@@ -66,7 +67,8 @@ public class MyDBHandler extends SQLiteOpenHelper{
         // 4. close
         db.close();
     }
-
+    // Select lat and long:
+// http://stackoverflow.com/questions/12672740/ordering-with-sqlite-by-nearest-latitude-longitude-coordinates
     public List<RecordItem> getAllRecordItems(){
         List<RecordItem> recordItemList = new LinkedList<>();
         // 1. build the query
@@ -74,7 +76,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        // 3. go over each row, build book and add it to list
+        // 3. go over each row, build item and add it to list
         RecordItem recordItem = null;
         if (cursor.moveToFirst()) {
             do {
@@ -82,16 +84,43 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 recordItem.setActivity(cursor.getString(1));
                 recordItem.setLatitude(Double.parseDouble(cursor.getString(2)));
                 recordItem.setLongitude(Double.parseDouble(cursor.getString(3)));
-                //recordItem.setTime(Date);
+                recordItem.setTime(cursor.getString(4));
 
                 // Add record to list
                 recordItemList.add(recordItem);
             } while (cursor.moveToNext());
         }
 
-        Log.d("getAllBooks()", recordItemList.toString());
-        // return books
+        Log.d("getAllRecordItems()", recordItemList.toString());
+        // return list
         return recordItemList;
+    }
+    //**********************    SQL QUERIES   *****************************************************
+//http://stackoverflow.com/questions/5202269/sqlite-query-in-android-to-count-rows
+    public float countActitiyWalkinginAllRecords(){
+        SQLiteDatabase db = getReadableDatabase();
+        //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Walking'");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public int countActitiyRunninginAllRecords(){
+        SQLiteDatabase db = getReadableDatabase();
+        //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
+        int i = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Running'");
+        //String query = "Select COUNT "
+        return i;
+    }
+    public int countActitiyStillinAllRecords(){
+        SQLiteDatabase db = getReadableDatabase();
+        //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
+        int i = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Still'");
+        //String query = "Select COUNT "
+        return i;
     }
 
 
@@ -114,63 +143,5 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
         return tableString;
     }
-
-//    //print db to string
-//    public String databaseToString(){
-//        String dbString = "";
-//        SQLiteDatabase db = getWritableDatabase();
-//        String query = "SELECT " + COLUMN_ACTIVITY + " FROM " + TABLE_NAME + " WHERE 1"; //"SELECT * FROM "
-//
-//        //cursor point to a location in my results
-//        Cursor c = db.rawQuery(query,null);
-//        //move to the first row
-//        c.moveToFirst();
-//
-//        while (!c.isAfterLast()){
-//            if(c.getString(c.getColumnIndex("activity"))!=null){//activity statt productname
-//                dbString += c.getString(c.getColumnIndex("activity"));
-//                dbString += "\n";
-//            }
-//        }
-//        c.moveToNext(); //aus yt comment
-//        db.close();
-//        return dbString;
-//    }
-//
-//    public void moveToSD(){
-//
-//        SQLiteDatabase db = getWritableDatabase();
-//
-//        try {
-//            // Backup of database to SDCard
-//            //db.open();
-//            File newFile = new File(Environment.getExternalStorageDirectory(), "saveSDcard"); //BackupFileNameHere
-//            InputStream input = new FileInputStream("/data/data/com.example.atrt01admin.meinexample03/databases/save.db"); ///data/data/com.YourProjectName/databases/DatabaseNameHere
-//            OutputStream output = new FileOutputStream(newFile);
-//
-//            // transfer bytes from the Input File to the Output File
-//            byte[] buffer = new byte[1024];
-//            int length;
-//            while ((length = input.read(buffer))>0) {
-//                output.write(buffer, 0, length);
-//            }
-//            output.flush();
-//            output.close();
-//            input.close();
-//            db.close();
-//
-//        } catch (Exception e) {
-//        }
-//
-//    }
-
-
 }
-
-
-
-
-
-
-
 
