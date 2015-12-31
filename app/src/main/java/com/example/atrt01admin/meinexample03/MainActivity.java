@@ -303,6 +303,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println("\n countWalking " + db.countActitiyWalkinginAllRecords());
         System.out.println("\n countRunning " + db.countActitiyRunninginAllRecords());
         System.out.println("\n countStill " + db.countActitiyStillinAllRecords());
+
+        showDataTextView.setText("Walking: " + db.countActitiyWalkinginAllRecords()
+        + "Running: " + db.countActitiyRunninginAllRecords() +
+                "Still: " + db.countActitiyStillinAllRecords());
     }
 
     public float getCountWalking(){

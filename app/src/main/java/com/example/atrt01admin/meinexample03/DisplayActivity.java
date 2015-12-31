@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class DisplayActivity extends AppCompatActivity {
 
-    //MyDBHandler db = new MyDBHandler(this, null, null, 1);
+    public static MyDBHandler db;
 
 
     private TextView tvOne;
@@ -25,7 +25,7 @@ public class DisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-
+        db = new MyDBHandler(this, null, null, 1);
         tvOne  = (TextView) findViewById((R.id.outputOne));
 //
 //
@@ -37,9 +37,9 @@ public class DisplayActivity extends AppCompatActivity {
 
         //barchart DAtenset
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(6686f, 0));
-        entries.add(new BarEntry(987f, 1));
-        entries.add(new BarEntry(8755f, 2));
+        entries.add(new BarEntry(getCountWalking(), 0));
+        entries.add(new BarEntry(getCountRunning(), 1));
+        entries.add(new BarEntry(getCountStill(), 2));
 
         //create Dataset out of entries
         BarDataSet dataset = new BarDataSet(entries, "Activities");
@@ -63,6 +63,18 @@ public class DisplayActivity extends AppCompatActivity {
         barChart.setDescription("cumulative frequency of activities");
 
 
+    }
+
+    public float getCountWalking(){
+        return db.countActitiyWalkinginAllRecords();
+    }
+
+    public float getCountRunning(){
+        return db.countActitiyRunninginAllRecords();
+    }
+
+    public float getCountStill(){
+        return db.countActitiyStillinAllRecords();
     }
 
 }

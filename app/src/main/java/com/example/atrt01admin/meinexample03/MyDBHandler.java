@@ -106,18 +106,18 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return i;
     }
 
-    public int countActitiyRunninginAllRecords(){
+    public float countActitiyRunninginAllRecords(){
         SQLiteDatabase db = getReadableDatabase();
         //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
-        int i = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
                 "activity=='Running'");
         //String query = "Select COUNT "
         return i;
     }
-    public int countActitiyStillinAllRecords(){
+    public float countActitiyStillinAllRecords(){
         SQLiteDatabase db = getReadableDatabase();
         //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
-        int i = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
                 "activity=='Still'");
         //String query = "Select COUNT "
         return i;
