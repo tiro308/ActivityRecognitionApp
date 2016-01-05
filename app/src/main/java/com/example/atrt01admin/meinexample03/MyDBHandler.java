@@ -95,9 +95,9 @@ public class MyDBHandler extends SQLiteOpenHelper{
         // return list
         return recordItemList;
     }
-    //**********************    SQL QUERIES   *****************************************************
-//http://stackoverflow.com/questions/5202269/sqlite-query-in-android-to-count-rows
-    public float countActitiyWalkinginAllRecords(){
+    //**********************    TOTAL RECORDS  *****************************************************
+    //http://stackoverflow.com/questions/5202269/sqlite-query-in-android-to-count-rows
+    public float countActitiyWalkingAllRecords(){
         SQLiteDatabase db = getReadableDatabase();
         //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
@@ -106,7 +106,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return i;
     }
 
-    public float countActitiyRunninginAllRecords(){
+    public float countActitiyRunningAllRecords(){
         SQLiteDatabase db = getReadableDatabase();
         //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
@@ -114,7 +114,8 @@ public class MyDBHandler extends SQLiteOpenHelper{
         //String query = "Select COUNT "
         return i;
     }
-    public float countActitiyStillinAllRecords(){
+
+    public float countActitiyStillAllRecords(){
         SQLiteDatabase db = getReadableDatabase();
         //no such column: walking (code 1): , while compiling: select count(*) from records where activity=walking
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
@@ -123,6 +124,81 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return i;
     }
 
+//******************************  HOME AREA  *******************************************************
+    public float countActivityWalkingHomeArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Walking' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityRunningHomeArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Running' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityStillHomeArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Still' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+        //String query = "Select COUNT "
+        return i;
+    }
+//******************************** WORKING AREA ****************************************************
+    public float countActivityWalkingWorkingArea() {
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+            "activity=='Walking' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityRunningWorkingArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Running' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityStillWorkingArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Still' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+//************************************ UNI AREA  ***************************************************
+    public float countActivityWalkingUniArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Walking' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityRunningUniArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Running' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+    public float countActivityStillUniArea(){
+        SQLiteDatabase db = getReadableDatabase();
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
+                "activity=='Still' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+        //String query = "Select COUNT "
+        return i;
+    }
+
+//**************************************************************************************************
 
     public String getTableAsString() {
         Log.d("getTableAsString", "getTableAsString called");

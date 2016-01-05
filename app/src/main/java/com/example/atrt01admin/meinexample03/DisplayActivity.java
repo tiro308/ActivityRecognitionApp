@@ -65,16 +65,14 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    public float getCountWalking(){
-        return db.countActitiyWalkinginAllRecords();
-    }
+    public float getCountWalking(){ return db.countActitiyWalkingAllRecords();}
 
     public float getCountRunning(){
-        return db.countActitiyRunninginAllRecords();
+        return db.countActitiyRunningAllRecords();
     }
 
     public float getCountStill(){
-        return db.countActitiyStillinAllRecords();
+        return db.countActitiyStillAllRecords();
     }
 
 }

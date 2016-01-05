@@ -28,15 +28,7 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
 
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -299,17 +291,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        for (RecordItem recordItem : recordItemList) {
 //            System.out.println(recordItem.recordItemToString());
 //        }
-        //test, getcounted "walking" entries
-        System.out.println("\n countWalking " + db.countActitiyWalkinginAllRecords());
-        System.out.println("\n countRunning " + db.countActitiyRunninginAllRecords());
-        System.out.println("\n countStill " + db.countActitiyStillinAllRecords());
+        //test, getcounted  entries
+        System.out.println("\n countWalkingAll " + db.countActitiyWalkingAllRecords());
+        System.out.println("\n countRunningAll " + db.countActitiyRunningAllRecords());
+        System.out.println("\n countStillAll " + db.countActitiyStillAllRecords());
 
-        showDataTextView.setText("Walking: " + db.countActitiyWalkinginAllRecords()
-        + "Running: " + db.countActitiyRunninginAllRecords() +
-                "Still: " + db.countActitiyStillinAllRecords());
-    }
+        System.out.println("\n countWalkingHome " + db.countActivityWalkingHomeArea());
+        System.out.println("\n countRunningHome " + db.countActivityRunningHomeArea());
+        System.out.println("\n countStillHome " + db.countActivityStillHomeArea());
 
-    public float getCountWalking(){
-        return db.countActitiyWalkinginAllRecords();
+        System.out.println("\n countWalkingWork " + db.countActivityWalkingWorkingArea());
+        System.out.println("\n countRunningWork " + db.countActivityRunningWorkingArea());
+        System.out.println("\n countStillWork " + db.countActivityStillWorkingArea());
+
+        System.out.println("\n countWalkingUni " + db.countActivityWalkingUniArea());
+        System.out.println("\n countRunningUni " + db.countActivityRunningUniArea());
+        System.out.println("\n countStillUni " + db.countActivityStillUniArea());
+
+        showDataTextView.setText("All Walking: " + db.countActitiyWalkingAllRecords()
+        + " Running: " + db.countActitiyRunningAllRecords() +
+                " Still: " + db.countActitiyStillAllRecords());
     }
 }
