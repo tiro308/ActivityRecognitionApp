@@ -26,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DisplayActivity"
             android:label="@string/title_activity_display"
@@ -36,6 +35,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.atrt01admin.meinexample03.MainActivity" />
         </activity>
+        <activity
+            android:name=".DisplayHomeArea"
+            android:label="@string/title_activity_display_home_area"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DisplayUniArea"
+            android:label="@string/title_activity_display_uni_area"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DisplayWorkingArea"
+            android:label="@string/title_activity_display_working_area"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

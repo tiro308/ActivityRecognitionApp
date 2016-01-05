@@ -13,4 +13,7 @@
     <string name="unidentifiable_activity">Unidentifiable activity: %1$d</string>
 
     <string name="title_activity_display">DisplayActivity</string>
+    <string name="title_activity_display_home_area">DisplayHomeArea</string>
+    <string name="title_activity_display_uni_area">DisplayUniArea</string>
+    <string name="title_activity_display_working_area">DisplayWorkingArea</string>
 </resources>

@@ -96,20 +96,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         switch (view.getId()) {
             case R.id.working_area:
                 message = "Working Area";
+                Intent intent = new Intent(this, DisplayWorkingArea.class);
+                intent.putExtra(Constants.STRING_EXTRA, message);
+                startActivity(intent);
                 break;
             case R.id.uni_area:
                 message = "University Area";
+                Intent in = new Intent(this, DisplayUniArea.class);
+                in.putExtra(Constants.STRING_EXTRA, message);
+                startActivity(in);
                 break;
             case R.id.home_area:
                 message = "Home Area";
+                Intent i = new Intent(this, DisplayHomeArea.class);
+                i.putExtra(Constants.STRING_EXTRA, message);
+                startActivity(i);
                 break;
         }
 
-        Intent intent = new Intent(this, DisplayActivity.class);
+//        Intent intent = new Intent(this, DisplayActivity.class);
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();
-        intent.putExtra(Constants.STRING_EXTRA, message);
-        startActivity(intent);
+//        intent.putExtra(Constants.STRING_EXTRA, message);
+//        startActivity(intent);
     }
 
     @Override
@@ -309,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println("\n countStillUni " + db.countActivityStillUniArea());
 
         showDataTextView.setText("All Walking: " + db.countActitiyWalkingAllRecords()
-        + " Running: " + db.countActitiyRunningAllRecords() +
+                + " Running: " + db.countActitiyRunningAllRecords() +
                 " Still: " + db.countActitiyStillAllRecords());
     }
 }
