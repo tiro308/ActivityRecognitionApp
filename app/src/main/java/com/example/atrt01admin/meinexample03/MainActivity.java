@@ -19,6 +19,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -37,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, LocationListener,Serializable {
+        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, LocationListener, Serializable {
 
     private static final String TAG = "MainActivity";
     private GoogleApiClient mGoogleApiClient;
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Context context;
     public List<RecordItem> recordItemList;
     public static MyDBHandler db;
+    BarChart barChart; //bardataset für Barchart
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +94,43 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
         mBroadcastReceiver = new ActivityDetectionBroadcastReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(Constants.STRING_ACTION)); //aus onResume
+        //create Barchart
+        createChart();
+    }
+
+    public void createChart() {
+
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(Constants.STRING_EXTRA);
+        showDataTextView.setText(message);
+
+        //barchart Datenset
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(getCountWalking(), 0));
+        entries.add(new BarEntry(getCountRunning(), 1));
+        entries.add(new BarEntry(getCountStill(), 2));
+
+        //create Dataset out of entries
+        BarDataSet dataset = new BarDataSet(entries, "Activities");
+
+        //x-achsen Labels
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("Walking");
+        labels.add("Running");
+        labels.add("Still");
+
+        //create blank chart
+        barChart = new BarChart(this);
+        //setContentView(barChart);
+        BarChart barChart = (BarChart) findViewById(R.id.chart);
+        BarData data = new BarData(labels, dataset);
+        barChart.setData(data);
+        dataset.setColors(ColorTemplate.COLORFUL_COLORS);
+        barChart.animateXY(2000, 2000);
+        barChart.invalidate();
+        //description of chart
+        barChart.setDescription("Total amount of activities counted");
     }
 
     public void openNewActivity(View view) {
@@ -153,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(3000);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        //start activity update
+        View view = new View(this);
+        requestActivityUpdates(view);
     }
 
     @Override //aus Connectioncallbacks
@@ -170,7 +217,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStart() {
         super.onStart();
         System.out.println("void onStart()");
-        mGoogleApiClient.connect();
+        mGoogleApiClient.connect(); //abfrage fehlt noch
+
     }
 
     @Override
@@ -237,7 +285,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onResume() {
         super.onResume();
         System.out.println("onResume()");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(Constants.STRING_ACTION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(Constants.STRING_ACTION));
+
+        createChart();
     }
 
     @Override
@@ -262,6 +312,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public class ActivityDetectionBroadcastReceiver extends BroadcastReceiver {
 
+        //mBroadcastReceiver.wait(1000) ??
+
         @Override
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> detectedActivities = intent.getParcelableArrayListExtra(Constants.STRING_EXTRA);
@@ -279,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     //System.out.println("Current Date: " + ft.format(dNow));
 
                     RecordItem recordItem = new RecordItem(activityToFile, latitude, longitude, ft.format(dNow));
+                    System.out.println("OnReceive in if()   ");
                     addRecordToDB(recordItem);
                 }
 
@@ -317,8 +370,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println("\n countRunningUni " + db.countActivityRunningUniArea());
         System.out.println("\n countStillUni " + db.countActivityStillUniArea());
 
-        showDataTextView.setText("All Walking: " + db.countActitiyWalkingAllRecords()
+        showDataTextView.setText("TOTAL Walking: " + db.countActitiyWalkingAllRecords()
                 + " Running: " + db.countActitiyRunningAllRecords() +
                 " Still: " + db.countActitiyStillAllRecords());
+    }
+
+    public float getCountWalking() {
+        return db.countActitiyWalkingAllRecords();
+    }
+
+    public float getCountRunning() {
+        return db.countActitiyRunningAllRecords();
+    }
+
+    public float getCountStill() {
+        return db.countActitiyStillAllRecords();
     }
 }

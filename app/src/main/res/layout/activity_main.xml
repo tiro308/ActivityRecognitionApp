@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,28 +16,28 @@
     tools:context=".MainActivity">
 
 
-
-    <Button
-        android:id="@+id/request_updates_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="requestActivityUpdates"
-        android:text="Request Activity Updates" />
-
-    <Button
-        android:id="@+id/remove_updates_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="removeActivityUpdates"
-        android:text="Remove A.U." />
     <!--
-    <Button
-        android:id="@+id/startSQLitetoString"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="printDatabase"
-        android:text="printDatabase" />
-        -->
+        <Button
+            android:id="@+id/request_updates_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="requestActivityUpdates"
+            android:text="Request Activity Updates" />
+
+        <Button
+            android:id="@+id/remove_updates_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="removeActivityUpdates"
+            android:text="Remove A.U." />
+
+        <Button
+            android:id="@+id/startSQLitetoString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="printDatabase"
+            android:text="printDatabase" />
+            -->
     <Button
         android:id="@+id/working_area"
         android:layout_width="match_parent"
@@ -60,7 +64,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick=""
-        android:text="show records" />
+        android:text="show total records" />
+
+    <TextView
+        android:id="@+id/showDataTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/show_records"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/show_records"
+        android:textSize="16sp"
+        android:background="#c0eefe"
+        android:maxLines = "50"
+        android:scrollbars = "vertical"/>
 
     <TextView
         android:id="@+id/detected_activities_textview"
@@ -105,16 +121,16 @@
         android:textSize="16sp"
         android:background="#ADD8E6" />
 
-    <TextView
-        android:id="@+id/showDataTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/longitude_textview"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/longitude_textview"
-        android:textSize="16sp"
-        android:background="#c0eefe"
-        android:maxLines = "50"
-        android:scrollbars = "vertical"/>
+    <com.github.mikephil.charting.charts.BarChart
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:id="@+id/chart"
+        android:layout_below="@+id/longitude_textview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="62dp">
+
+    </com.github.mikephil.charting.charts.BarChart>
 
 </LinearLayout>
+</ScrollView>
