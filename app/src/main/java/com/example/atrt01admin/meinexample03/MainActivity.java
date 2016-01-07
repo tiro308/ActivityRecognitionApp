@@ -217,7 +217,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStart() {
         super.onStart();
         System.out.println("void onStart()");
-        mGoogleApiClient.connect(); //abfrage fehlt noch
+        if(!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
 
     }
 
@@ -320,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             String activityString = "";
             String activityToFile = "";
             for (DetectedActivity activity : detectedActivities) {
-                if (activity.getType() == DetectedActivity.RUNNING || activity.getType() == DetectedActivity.WALKING || activity.getType() == DetectedActivity.STILL) {
+                if (activity.getType() == DetectedActivity.RUNNING & activity.getConfidence() >50 || activity.getType() == DetectedActivity.WALKING & activity.getConfidence() >50 || activity.getType() == DetectedActivity.STILL & activity.getConfidence() >50) {
                     activityString = "Activity: " + getDetectedActivity(activity.getType()) + ", Confidence: " + activity.getConfidence() + "%\n"; // += für mehrere activities
 
                     activityToFile = getDetectedActivity(activity.getType());
