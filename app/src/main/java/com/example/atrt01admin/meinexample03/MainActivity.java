@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (!mGoogleApiClient.isConnected()) {
             Toast.makeText(this, "GoogleApiClient not yet connected", Toast.LENGTH_SHORT).show();
         } else {
-            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mGoogleApiClient, 0, getActivityDetectionPendingIntent()).setResultCallback(this);
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mGoogleApiClient, 3000, getActivityDetectionPendingIntent()).setResultCallback(this); //update Intervall testen
         }
     }
 
