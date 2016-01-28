@@ -16,4 +16,5 @@
     <string name="title_activity_display_home_area">DisplayHomeArea</string>
     <string name="title_activity_display_uni_area">DisplayUniArea</string>
     <string name="title_activity_display_working_area">DisplayWorkingArea</string>
+    <string name="title_activity_display_history">DisplayHistory</string>
 </resources>

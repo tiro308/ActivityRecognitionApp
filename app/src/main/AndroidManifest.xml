@@ -46,6 +46,10 @@
         <activity
             android:name=".DisplayWorkingArea"
             android:label="@string/title_activity_display_working_area"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DisplayHistory"
+            android:label="@string/title_activity_display_history"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public static MyDBHandler db;
     BarChart barChart; //bardataset für Barchart
 
+    boolean flag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 i.putExtra(Constants.STRING_EXTRA, message);
                 startActivity(i);
                 break;
+            case R.id.show_history:
+                message = "History";
+                Intent inte = new Intent(this, DisplayHistory.class);
+                inte.putExtra(Constants.STRING_EXTRA, message);
+                startActivity(inte);
+                break;
         }
 
 //        Intent intent = new Intent(this, DisplayActivity.class);
@@ -227,9 +235,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStop() {
         super.onStop();
         System.out.println("void onStop()");
-//        if (mGoogleApiClient.isConnected()) {
-//            mGoogleApiClient.disconnect();
-//        }
+            if (!mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.connect();
+            }
     }
 
     public String getDetectedActivity(int detectedActivityType) {
@@ -260,7 +268,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (!mGoogleApiClient.isConnected()) {
             Toast.makeText(this, "GoogleApiClient not yet connected", Toast.LENGTH_SHORT).show();
         } else {
-            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mGoogleApiClient, 3000, getActivityDetectionPendingIntent()).setResultCallback(this); //update Intervall testen
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mGoogleApiClient, 1000, getActivityDetectionPendingIntent()).setResultCallback(this);
+            Toast.makeText(this, "GoogleApiClient connected", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -287,6 +296,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onResume() {
         super.onResume();
         System.out.println("onResume()");
+        if(!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(Constants.STRING_ACTION));
 
         createChart();
@@ -295,6 +307,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onPause() {
         System.out.println("onPause()");
+        if(!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
 //        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
         super.onPause();
     }
@@ -305,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println(DateFormat.getTimeInstance().format(new Date())); //test
         mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
         mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
-        Toast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
+        //SToast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
 
         latitude = location.getLatitude();
         longitude = location.getLongitude();
@@ -329,17 +344,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                     //create new recordItem
                     Date dNow = new Date();
-                    SimpleDateFormat ft = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd"); //("yyyy-MM-dd HH:mm:ss")
                     //System.out.println("Current Date: " + ft.format(dNow));
 
+                    if(flag) {
+                        addTestData();
+                        flag=false;
+                    }
+
                     RecordItem recordItem = new RecordItem(activityToFile, latitude, longitude, ft.format(dNow));
-                    System.out.println("OnReceive in if()   ");
+                    //System.out.println("OnReceive if()-clause ");
                     addRecordToDB(recordItem);
                 }
 
             }
-            mDetectedActivityTextView.setText(activityString);
+            mDetectedActivityTextView.setText(activityString); //in if testen
         }
+    }
+
+    public void addTestData(){
+        addRecordToDB(new RecordItem("Still", 48.8, 16.5, "2016-01-18"));
+        addRecordToDB(new RecordItem("Walking", 48.8, 16.5, "2016-01-18"));
+        addRecordToDB(new RecordItem("Walking", 48.8, 16.5, "2016-01-18"));
+        addRecordToDB(new RecordItem("Running", 48.8, 16.5, "2016-01-18"));
+        addRecordToDB(new RecordItem("Still", 48.8, 16.5, "2016-01-17"));
+        addRecordToDB(new RecordItem("Still", 48.7, 16.6, "2016-01-17"));
+        addRecordToDB(new RecordItem("Walking", 48.7, 16.6, "2016-01-17"));
+        addRecordToDB(new RecordItem("Still", 48.8, 16.8, "2016-01-16"));
+        addRecordToDB(new RecordItem("Walking", 48.8, 16.8, "2016-01-16"));
+        addRecordToDB(new RecordItem("Running", 48.8, 16.8, "2016-01-16"));
+        addRecordToDB(new RecordItem("Running", 48.8, 16.8, "2016-01-16"));
     }
 
     public void addRecordToDB(RecordItem recordItem) {
@@ -371,6 +405,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println("\n countWalkingUni " + db.countActivityWalkingUniArea());
         System.out.println("\n countRunningUni " + db.countActivityRunningUniArea());
         System.out.println("\n countStillUni " + db.countActivityStillUniArea());
+
+        System.out.println("\n countWalking3day " + db.countActivityWalkingThreeDaysBefore());
+        System.out.println("\n countRunning3day " + db.countActivityRunningThreeDaysBefore());
+        System.out.println("\n countStill3day " + db.countActivityStillThreeDaysBefore());
 
         showDataTextView.setText("TOTAL Walking: " + db.countActitiyWalkingAllRecords()
                 + " Running: " + db.countActitiyRunningAllRecords() +

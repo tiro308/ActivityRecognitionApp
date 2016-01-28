@@ -60,6 +60,13 @@
         android:text="open home area" />
 
     <Button
+        android:id="@+id/show_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="openNewActivity"
+        android:text="open history" />
+
+    <Button
         android:id="@+id/show_records"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

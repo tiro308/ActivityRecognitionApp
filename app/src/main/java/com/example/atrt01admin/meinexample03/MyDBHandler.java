@@ -14,7 +14,7 @@ import java.util.List;
 public class MyDBHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION=1;
-    private static final String DATABASE_NAME="save1.db"; //unbedingt .db
+    private static final String DATABASE_NAME="save.db"; //unbedingt .db
     public static final String TABLE_NAME = "records";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_ACTIVITY = "activity";
@@ -55,13 +55,13 @@ public class MyDBHandler extends SQLiteOpenHelper{
         // 1. get reference to writable DB
         SQLiteDatabase db = getWritableDatabase();
         // 2. create ContentValues to add key "column"/value
-        System.out.println(recordItem.getLatitude());
+        //System.out.println(recordItem.getLatitude());
         ContentValues values = new ContentValues();
         values.put(COLUMN_ACTIVITY, recordItem.getActivity()); //bsp get.productname()
         values.put(COLUMN_LAT, recordItem.getLatitude());
         values.put(COLUMN_LONG, recordItem.getLongitude());
         values.put(COLUMN_TIMESTAMP, recordItem.getTime().toString());
-        System.out.println("values aus DB: " + values.toString());
+        //System.out.println("values aus DB: " + values.toString());
         // 3. insert
         db.insert(TABLE_NAME, null, values);
         // 4. close
@@ -198,7 +198,66 @@ public class MyDBHandler extends SQLiteOpenHelper{
         return i;
     }
 
-//**************************************************************************************************
+//***************************   HISTORY  ***********************************************************
+ // timestamp=2016-01-19 13:48:44
+    public float countActivityWalkingYesterday(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Walking' AND DATE(timestamp) == DATE('now', '-1 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityRunningYesterday(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Running' AND DATE(timestamp) == DATE('now', '-1 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityStillYesterday(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Still' AND DATE(timestamp) == DATE('now', '-1 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+
+    public float countActivityWalkingTwoDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Walking' AND DATE(timestamp) == DATE('now', '-2 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityRunningTwoDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Running' AND DATE(timestamp) == DATE('now', '-2 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityStillTwoDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Still' AND DATE(timestamp) == DATE('now', '-2 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+
+    public float countActivityWalkingThreeDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Walking' AND DATE(timestamp) == DATE('now', '-3 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityRunningThreeDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Running' AND DATE(timestamp) == DATE('now', '-3 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+    public float countActivityStillThreeDaysBefore(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Still' AND DATE(timestamp) == DATE('now', '-3 day')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+
+    //**********************************************************************************************
 
     public String getTableAsString() {
         Log.d("getTableAsString", "getTableAsString called");
