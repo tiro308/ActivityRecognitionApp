@@ -128,7 +128,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityWalkingHomeArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Walking' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+                "activity=='Walking' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -136,7 +136,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityRunningHomeArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Running' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+                "activity=='Running' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -144,7 +144,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityStillHomeArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Still' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352");
+                "activity=='Still' AND latitude BETWEEN 48.184 AND 48.188 AND longitude BETWEEN 16.348 AND 16.352 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -152,7 +152,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityWalkingWorkingArea() {
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-            "activity=='Walking' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+            "activity=='Walking' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -160,7 +160,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityRunningWorkingArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Running' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+                "activity=='Running' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -168,7 +168,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityStillWorkingArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Still' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377");
+                "activity=='Still' AND latitude BETWEEN 48.208 AND 48.212 AND longitude BETWEEN 16.372 AND 16.377 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -177,7 +177,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityWalkingUniArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Walking' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+                "activity=='Walking' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -185,7 +185,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityRunningUniArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Running' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+                "activity=='Running' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
@@ -193,13 +193,34 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public float countActivityStillUniArea(){
         SQLiteDatabase db = getReadableDatabase();
         float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME,
-                "activity=='Still' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358");
+                "activity=='Still' AND latitude BETWEEN 48.218 AND 48.222 AND longitude BETWEEN 16.353 AND 16.358 AND DATE(timestamp) == DATE('now')");
         //String query = "Select COUNT "
         return i;
     }
 
 //***************************   HISTORY  ***********************************************************
  // timestamp=2016-01-19 13:48:44
+public float countActivityWalkingToday(){
+    SQLiteDatabase db = getReadableDatabase();
+    String query = "activity=='Walking' AND DATE(timestamp) == DATE('now')";
+    float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+    return i;
+}
+
+    public float countActivityRunningToday(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Running' AND DATE(timestamp) == DATE('now')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+
+    public float countActivityStillToday(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "activity=='Still' AND DATE(timestamp) == DATE('now')";
+        float i = (float) DatabaseUtils.queryNumEntries(db, TABLE_NAME, query);
+        return i;
+    }
+
     public float countActivityWalkingYesterday(){
         SQLiteDatabase db = getReadableDatabase();
         String query = "activity=='Walking' AND DATE(timestamp) == DATE('now', '-1 day')";

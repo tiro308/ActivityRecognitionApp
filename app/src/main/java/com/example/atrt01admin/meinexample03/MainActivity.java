@@ -10,7 +10,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private static final String TAG = "MainActivity";
     private GoogleApiClient mGoogleApiClient;
-    private TextView mDetectedActivityTextView;
+    //private TextView mDetectedActivityTextView;
     private ActivityDetectionBroadcastReceiver mBroadcastReceiver;
     private LocationRequest mLocationRequest;
     private String mLastUpdateTime;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private double longitude;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
-    private TextView showDataTextView;
+    //private TextView showDataTextView;
     private Context context;
     public List<RecordItem> recordItemList;
     public static MyDBHandler db;
@@ -73,11 +72,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         db = new MyDBHandler(this, null, null, 1);
         //printDatabase();
 
-        mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
-        mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
-        showDataTextView = (TextView) findViewById(R.id.showDataTextView);
-        showDataTextView.setMovementMethod(new ScrollingMovementMethod());
-        mDetectedActivityTextView = (TextView) findViewById(R.id.detected_activities_textview);
+        //mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
+        //mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
+        //showDataTextView = (TextView) findViewById(R.id.showDataTextView);
+        //showDataTextView.setMovementMethod(new ScrollingMovementMethod());
+        //mDetectedActivityTextView = (TextView) findViewById(R.id.detected_activities_textview);
 
         final Button button = (Button) findViewById(R.id.show_records);
         button.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Intent intent = getIntent();
         String message = intent.getStringExtra(Constants.STRING_EXTRA);
-        showDataTextView.setText(message);
+        //showDataTextView.setText(message);
 
         //barchart Datenset
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -132,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         barChart.animateXY(2000, 2000);
         barChart.invalidate();
         //description of chart
-        barChart.setDescription("Total amount of activities counted");
+        barChart.setDescription("");
+        barChart.getLegend().setEnabled(false);
     }
 
     public void openNewActivity(View view) {
@@ -140,25 +140,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         switch (view.getId()) {
             case R.id.working_area:
-                message = "Working Area";
+                message = "activities in working area today";
                 Intent intent = new Intent(this, DisplayWorkingArea.class);
                 intent.putExtra(Constants.STRING_EXTRA, message);
                 startActivity(intent);
                 break;
             case R.id.uni_area:
-                message = "University Area";
+                message = "activities in university area today";
                 Intent in = new Intent(this, DisplayUniArea.class);
                 in.putExtra(Constants.STRING_EXTRA, message);
                 startActivity(in);
                 break;
             case R.id.home_area:
-                message = "Home Area";
+                message = "activities in home area today";
                 Intent i = new Intent(this, DisplayHomeArea.class);
                 i.putExtra(Constants.STRING_EXTRA, message);
                 startActivity(i);
                 break;
             case R.id.show_history:
-                message = "History";
+                message = "history";
                 Intent inte = new Intent(this, DisplayHistory.class);
                 inte.putExtra(Constants.STRING_EXTRA, message);
                 startActivity(inte);
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("void onStart()");
+        System.out.println("void onStart()" + mGoogleApiClient.isConnected());
         if(!mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
         }
@@ -234,10 +234,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         super.onStop();
-        System.out.println("void onStop()");
-            if (!mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.connect();
-            }
+        System.out.println("void onStop()" + mGoogleApiClient.isConnected());
+        if (!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
     }
 
     public String getDetectedActivity(int detectedActivityType) {
@@ -317,13 +317,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override // von Interface LocationListener
     public void onLocationChanged(Location location) {
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        System.out.println(DateFormat.getTimeInstance().format(new Date())); //test
-        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
-        mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
-        //SToast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
-
+        //System.out.println(DateFormat.getTimeInstance().format(new Date())); //test
+        //mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
+        //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
+        //Toast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"Lat: " + latitude + ", Long: " + longitude, Toast.LENGTH_SHORT).show();
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        System.out.println("Lat: " + latitude + ", Long: " + longitude);
 
     }
 
@@ -339,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             for (DetectedActivity activity : detectedActivities) {
                 if (activity.getType() == DetectedActivity.RUNNING & activity.getConfidence() >50 || activity.getType() == DetectedActivity.WALKING & activity.getConfidence() >50 || activity.getType() == DetectedActivity.STILL & activity.getConfidence() >50) {
                     activityString = "Activity: " + getDetectedActivity(activity.getType()) + ", Confidence: " + activity.getConfidence() + "%\n"; // += für mehrere activities
-
+                    System.out.println(activityString);
                     activityToFile = getDetectedActivity(activity.getType());
 
                     //create new recordItem
@@ -358,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
 
             }
-            mDetectedActivityTextView.setText(activityString); //in if testen
+            //mDetectedActivityTextView.setText(activityString); //in if testen
         }
     }
 
@@ -379,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void addRecordToDB(RecordItem recordItem) {
 
         db.addRecord(recordItem);
-        System.out.println("\n addRecordToDB:" + recordItem.recordItemToString());
+        System.out.println("\n addRecordToDB: " + recordItem.recordItemToString());
     }
 
     public void getAllRecords() {
@@ -389,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        for (RecordItem recordItem : recordItemList) {
 //            System.out.println(recordItem.recordItemToString());
 //        }
+        createChart();
         //test, getcounted  entries
         System.out.println("\n countWalkingAll " + db.countActitiyWalkingAllRecords());
         System.out.println("\n countRunningAll " + db.countActitiyRunningAllRecords());
@@ -410,20 +412,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         System.out.println("\n countRunning3day " + db.countActivityRunningThreeDaysBefore());
         System.out.println("\n countStill3day " + db.countActivityStillThreeDaysBefore());
 
-        showDataTextView.setText("TOTAL Walking: " + db.countActitiyWalkingAllRecords()
-                + " Running: " + db.countActitiyRunningAllRecords() +
-                " Still: " + db.countActitiyStillAllRecords());
+//        showDataTextView.setText("TOTAL Walking: " + db.countActitiyWalkingAllRecords()
+//                + " Running: " + db.countActitiyRunningAllRecords() +
+//                " Still: " + db.countActitiyStillAllRecords());
     }
 
     public float getCountWalking() {
-        return db.countActitiyWalkingAllRecords();
+        return db.countActivityWalkingToday();
     }
 
     public float getCountRunning() {
-        return db.countActitiyRunningAllRecords();
+        return db.countActivityRunningToday();
     }
 
     public float getCountStill() {
-        return db.countActitiyStillAllRecords();
+        return db.countActivityStillToday();
     }
 }

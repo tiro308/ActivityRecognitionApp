@@ -60,7 +60,8 @@ public class DisplayWorkingArea extends AppCompatActivity {
         barChart.animateXY(2000, 2000);
         barChart.invalidate();
         //description of chart
-        barChart.setDescription("activities working area");
+        barChart.setDescription("");
+        barChart.getLegend().setEnabled(false);
 
     }
 

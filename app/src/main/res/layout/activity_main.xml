@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,8 +8,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:theme="@android:style/Theme.Light"
+    tools:context=".MainActivity"
+    android:weightSum="1"
+    android:orientation="vertical">
 
 
     <!--
@@ -43,21 +41,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openNewActivity"
-        android:text="open working area" />
+        android:text="activities in working area" />
 
     <Button
         android:id="@+id/uni_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openNewActivity"
-        android:text="open university area" />
+        android:text="activities in university area" />
 
     <Button
         android:id="@+id/home_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="openNewActivity"
-        android:text="open home area" />
+        android:text="activities in home area" />
 
     <Button
         android:id="@+id/show_history"
@@ -68,28 +66,29 @@
 
     <Button
         android:id="@+id/show_records"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
         android:onClick=""
-        android:text="show total records" />
-
+        android:text="reload graphic" />
+<!--
     <TextView
         android:id="@+id/showDataTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/show_records"
-        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/show_records"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:background="#c0eefe"
         android:maxLines = "50"
         android:scrollbars = "vertical"/>
-
+-->
+    <!--
     <TextView
         android:id="@+id/detected_activities_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="16dp"
         android:background="#6495ED" />
 
     <TextView
@@ -127,17 +126,32 @@
         android:layout_toRightOf="@+id/longitude"
         android:textSize="16sp"
         android:background="#ADD8E6" />
+-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your activities today:"
+        android:id="@+id/headlineForChart"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="260dp"
         android:id="@+id/chart"
-        android:layout_below="@+id/longitude_textview"
+        android:layout_below="@+id/headlineForChart"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="62dp">
+        android:layout_marginTop="17dp">
 
     </com.github.mikephil.charting.charts.BarChart>
 
 </LinearLayout>
+
+<!--
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 </ScrollView>
+-->
